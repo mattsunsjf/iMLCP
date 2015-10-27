@@ -2,7 +2,7 @@
 
 iMLCP is an interactive shell for MarkLogic Content Pump.
 
-Author: [Matt Sun](mailto:matt.sun@marklogic.com)
+Author: mattsun
 
 
 ## Features
@@ -50,30 +50,15 @@ sh build.sh
 ```
 After successful build, follow the steps in #Usage to run iMLCP.
 
-### System Requirement
-* Java 7
-* Maven 3
+## Dependency
 
-### Dependency
+* [jlineEnhanced](https://github.com/mattsunsjf/jline2-imlcp) A friendly fork of jline2 with specific enhancement for iMLCP 
+* [MLCP](http://developer.marklogic.com/products/mlcp) MarkLogic Content Pump, an open-source, Java-based command-line tool that provides the fastest way to import, export, and copy data to or from MarkLogic databases 
 
-* [jlineEnhanced v2.15](https://github.com/mattsunsjf/jline2-imlcp) A friendly fork of jline2 with specific enhancement for iMLCP 
-* [MLCP v8.0-3](http://developer.marklogic.com/products/mlcp) MarkLogic Content Pump, an open-source, Java-based command-line tool that provides the fastest way to import, export, and copy data to or from MarkLogic databases 
-
-## Platform
-
-Currently only support *nix systems. Will extend the support to Windows and other system later.
 
 ## Versioning
 
 iMLCP uses the same version of MarkLogic Server, which is different from MCLP. Currently only a few versions are available (see branches), but the author can made a branch on demand. Just email [matt.sun@marklogic.com](mailto:matt.sun@marklogic.com) for a request.
-
-## Todo
-
-- Allow space in option value
-- Option value masking (password)
-- Windows support
-- Shell output coloring
-- User experience improvement
 
 ## License
 
