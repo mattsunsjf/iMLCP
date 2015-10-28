@@ -12,6 +12,7 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 * Auto-completion: MLCP command, options, frequently-used value (true, false, xml, ...) and system path
 * Command history (hit up arrow)
 * Run any system shell command
+* **Wildcard** file path
 * Easy to deploy, standalone project of MLCP
 * Get rid of many existing system shell limitations, include but not limit to:
   * **Use space** in your option argument! (-output_uri_replace "str,'hello world'" doesn't work before becasue space between hello and world)
