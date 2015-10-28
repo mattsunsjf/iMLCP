@@ -66,7 +66,7 @@ Currently only support *nix systems. Will extend the support to Windows and othe
 
 ## Versioning
 
-iMLCP uses the same version of MarkLogic Server, which is different from MCLP. Currently only a few versions are available (see branches), but the author can made a branch on demand. Just email [matt.sun@marklogic.com](mailto:matt.sun@marklogic.com) for a request.
+iMLCP uses the same version of MarkLogic Server, which is different from MCLP. Currently only a few versions are available (see branches), but the author can made a branch on demand. Just email [author](mailto:matt.sun@marklogic.com) for a request.
 
 ## Todo
 
