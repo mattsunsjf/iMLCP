@@ -12,11 +12,12 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 * Auto-completion: MLCP command, options, frequently-used value (true, false, xml, ...) and system path
 * Command history (hit up arrow)
 * Run any system shell command
-* Easy to deploy
+* Easy to deploy, standalone project of MLCP
 * Get rid of many existing system shell limitations, include but not limit to:
-  * No automatic path expanding limitation of system shell (which may cause 'Argument too long' error)
-  * No need to use double quote to enclose some fields (Eg. -delimiter "|", since vertical bar has special meaning in system shell)
-  * A easy replacement of options_file in some cases (Eg. use tab as delimiter and contains space in csv header)
+  * **Use space** in your option argument! (-output_uri_replace "str,'hello world'" doesn't work before becasue space between hello and world)
+  * **No automatic path expanding limitation** of system shell (which may cause '*Argument too long*' error)
+  * **Use | pipline as delimiter!** No need to use double quote to enclose some fields (-delimiter | deosn't work before since vertical bar has special meaning in system shell)
+
 
 ## Command Documentation
 
@@ -69,7 +70,6 @@ iMLCP uses the same version of MarkLogic Server, which is different from MCLP. C
 
 ## Todo
 
-- Allow space in option value
 - Option value masking (password)
 - Windows support
 - Shell output coloring

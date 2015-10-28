@@ -2,11 +2,11 @@ echo "Cleaning the previous built files..."
 #echo "rm -r target deliverable"
 rm -r target deliverable
 
-echo "Build the package the project..."
+echo "Building the package the project..."
 #echo "mvn package"
 mvn package
 
-echo "Create deliverable directories"
+echo "Creating deliverable directories"
 #echo "mkdir deliverable" 
 mkdir deliverable
 

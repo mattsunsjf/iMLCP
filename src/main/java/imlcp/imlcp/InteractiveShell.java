@@ -7,6 +7,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.hadoop.util.VersionInfo;
 
@@ -51,24 +54,7 @@ public class InteractiveShell {
 		iMlcp.startConsole();
 	}
 	
-	protected void logShellHelp() throws IOException {
-		System.out.println("MLCP Interactive Shell Help");
-		System.out.println("----------------------------------------------------");
-		System.out.println("[Command]              [Usage]");
-		System.out.println("cls/clear              Clean the screen");
-		System.out.println("quit/exit              Exit the MLCP interactive shell");
-		System.out.println("$[command]             Execute system shell command. Example: $ls -al");
-		System.out.println("help                   Help for MLCP");
-		System.out.println("CTRL+C                 Stop the MLCP job or discard current command line");
-		System.out.println("?                      Help for interactive shell");
-	}
-	
-	protected void printHead() throws IOException {
-		System.out.println();
-		logVersions();
-		System.out.println("Type \"?\" for interactive shell help."
-				+ " Type \"HELP\" for MLCP help.");
-	}
+
 	
 	/*
 	public void runShellCommand(String command){
@@ -86,21 +72,6 @@ public class InteractiveShell {
         }
     }
     */
-	
-	protected void unescape(String[] args) {
-		char tab = '\t';
-		String tabStr = "" + tab;
-		char backslash = '\\';
-		String backslashStr = "" + backslash;
-		char newline = '\n';
-		String newlineStr = "" + newline;
-		
-		for (int i = 0; i < args.length; i++) {
-			args[i] = args[i].replace("\\t", tabStr);
-			args[i] = args[i].replace("\\\\", backslashStr);
-			args[i] = args[i].replace("\\n", newlineStr);
-		}
-	}
 	
 	protected void startConsole() throws Exception {
     	while (true) {
@@ -147,8 +118,7 @@ public class InteractiveShell {
     					}
     					continue;
     	            } else {
-    	            	String arguments[] = line.split(" ");
-    	            	unescape(arguments);
+    	            	String arguments[] = split(line);
         	            try {
         	            	ContentPump.runCommand(arguments);
         	            } catch (Exception e) {
@@ -162,6 +132,88 @@ public class InteractiveShell {
     			continue;
     		}
     	}
+    }
+	
+	/* Command line string pre-process */
+	
+	protected String[] preprocess(String line) {
+		String[] args = split(line);
+		unquote(args);
+		unescape(args);
+		return args;
+	}
+	
+	// Split the command line by spaces, 
+	// but ignore the tokens enclosed by double quotes or single quotes
+	protected String[] split(String line) {
+		List<String> list = new ArrayList<String>();
+		Matcher m = Pattern.compile("([^\"]\\S*|\".+?\"|'.+?')\\s*").matcher(line);
+		while (m.find()) {
+			list.add(m.group(1));
+		}
+    	String[] args = new String[list.size()];
+    	for (int i = 0; i< args.length; i++) {
+    		args[i] = list.get(i);
+    	}
+    	
+    	return args;
+	}
+	
+	// Unescape escaped characters
+	protected void unescape(String[] args) {
+		char tab = '\t';
+		String tabStr = "" + tab;
+		char backslash = '\\';
+		String backslashStr = "" + backslash;
+		char newline = '\n';
+		String newlineStr = "" + newline;
+		
+		for (int i = 0; i < args.length; i++) {
+			args[i] = args[i].replace("\\t", tabStr);
+			args[i] = args[i].replace("\\\\", backslashStr);
+			args[i] = args[i].replace("\\n", newlineStr);
+		}
+	}	
+	
+	// Remove the double quotes or single quotes around the token
+	protected void unquote(String[] args) {
+		for (int i = 0; i< args.length; i++) {
+			String trimmed = args[i].trim();
+			if ((trimmed.startsWith("\"") && trimmed.endsWith("\"")) || 
+					(trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+				args[i] = trimmed.substring(1, trimmed.length() - 2);
+			}
+		}
+	}
+	
+	/* From this line below, all the functions are used to print something */
+	
+	protected void logShellHelp() throws IOException {
+		System.out.println("MLCP Interactive Shell Help");
+		System.out.println("----------------------------------------------------");
+		System.out.println("[Command]              [Usage]");
+		System.out.println("cls/clear              Clean the screen");
+		System.out.println("quit/exit              Exit the MLCP interactive shell");
+		System.out.println("$[command]             Execute system shell command. Example: $ls -al");
+		System.out.println("help                   Help for MLCP");
+		System.out.println("CTRL+C                 Stop the MLCP job or discard current command line");
+		System.out.println("?                      Help for interactive shell");
+	}
+	
+	protected void printHead() throws IOException {
+		System.out.println();
+		logVersions();
+		System.out.println("Type \"?\" for interactive shell help."
+				+ " Type \"HELP\" for MLCP help.");
+	}
+	
+	public static void logVersions() {
+        System.out.println("ContentPump version: 1.3-3");
+        System.out.println("Java version: " + 
+            System.getProperty("java.version"));
+        System.out.println("Hadoop version: " + VersionInfo.getVersion());
+        System.out.println("Supported MarkLogic versions: " + 
+                "6.0 - 8.0-3");
     }
 	
 	protected ArrayList<String> configAutoCompletion() throws Exception {
@@ -278,13 +330,4 @@ public class InteractiveShell {
 		
 		return dict;
 	}
-	
-	public static void logVersions() {
-        System.out.println("ContentPump version: 1.3-3");
-        System.out.println("Java version: " + 
-            System.getProperty("java.version"));
-        System.out.println("Hadoop version: " + VersionInfo.getVersion());
-        System.out.println("Supported MarkLogic versions: " + 
-                "6.0 - 8.0-3");
-    }
 }
