@@ -12,6 +12,7 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 * Auto-completion: MLCP command, options, frequently-used value (true, false, xml, ...) and system path
 * Command history (hit up arrow)
 * Run any system shell command
+* **Wildcard** file path
 * Easy to deploy, standalone project of MLCP
 * Get rid of many existing system shell limitations, include but not limit to:
   * **Use space** in your option argument! (-output_uri_replace "str,'hello world'" doesn't work before becasue space between hello and world)
@@ -66,7 +67,7 @@ Currently only support *nix systems. Will extend the support to Windows and othe
 
 ## Versioning
 
-iMLCP uses the same version of MarkLogic Server, which is different from MCLP. Currently only a few versions are available (see branches), but the author can made a branch on demand. Just email [matt.sun@marklogic.com](mailto:matt.sun@marklogic.com) for a request.
+iMLCP uses the same version of MarkLogic Server, which is different from MCLP. Currently only a few versions are available (see branches), but a branch matching MarkLogic Server version can be made on demand. Email [author](mailto:matt.sun@marklogic.com) for more details.
 
 ## Todo
 
