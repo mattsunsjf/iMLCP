@@ -7,7 +7,7 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 
 ## Features
 
-* Run any command of MLCP. Use iMLCP same way as mlcp.sh if you are already familiar with it
+* Run any MLCP command as-is
 * Interactive (Read-Eval-Print Loop)...
 * Auto-completion: MLCP command, options, frequently-used value (true, false, xml, ...) and system path
 * Command history (hit up arrow)
@@ -17,7 +17,7 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 * Get rid of many existing system shell limitations, include but not limit to:
   * **Use space** in your option argument! (-output_uri_replace "str,'hello world'" doesn't work before becasue space between hello and world)
   * **No automatic path expanding limitation** of system shell (which may cause '*Argument too long*' error)
-  * **Use | pipline as delimiter!** No need to use double quote to enclose some fields (-delimiter | deosn't work before since vertical bar has special meaning in system shell)
+  * **Use | pipline as delimiter!** or any other special character... No need to use double quote to enclose some fields (-delimiter | deosn't work before since vertical bar has special meaning in system shell)
 
 
 ## Command Documentation
@@ -53,13 +53,14 @@ sh build.sh
 After successful build, follow the steps in #Usage to run iMLCP.
 
 ### System Requirement
-* Java 7
-* Maven 3
+* Maven 3 (to build)
+* Java 7 (same version requirement of MLCP)
 
 ### Dependency
 
 * [jlineEnhanced v2.15](https://github.com/mattsunsjf/jline2-imlcp) A friendly fork of jline2 with specific enhancement for iMLCP 
-* [MLCP v8.0-3](http://developer.marklogic.com/products/mlcp) MarkLogic Content Pump, an open-source, Java-based command-line tool that provides the fastest way to import, export, and copy data to or from MarkLogic databases 
+* [MLCP v8.0-3](http://developer.marklogic.com/products/mlcp) MarkLogic Content Pump, an open-source, Java-based command-line tool that provides the fastest way to import, export, and copy data to or from MarkLogic databases
+* Other dependencies are mostly for MLCP, see pom.xml for more details.
 
 ## Platform
 
@@ -75,6 +76,10 @@ iMLCP uses the same version of MarkLogic Server, which is different from MCLP. C
 - Windows support
 - Shell output coloring
 - User experience improvement
+
+## Quick Demo (Video)
+
+[![ScreenShot](http://tekloaded.com/wp-content/uploads/2015/02/youtube-vid.jpg)](http://youtu.be/CTxOJuo-Ju8)
 
 ## License
 
