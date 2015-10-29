@@ -17,7 +17,7 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 * Get rid of many existing system shell limitations, include but not limit to:
   * **Use space** in your option argument! (-output_uri_replace "str,'hello world'" doesn't work before becasue space between hello and world)
   * **No automatic path expanding limitation** of system shell (which may cause '*Argument too long*' error)
-  * **Use | pipline as delimiter!** No need to use double quote to enclose some fields (-delimiter | deosn't work before since vertical bar has special meaning in system shell)
+  * **Use | pipline as delimiter!** or any other special character... No need to use double quote to enclose some fields (-delimiter | deosn't work before since vertical bar has special meaning in system shell)
 
 
 ## Command Documentation
