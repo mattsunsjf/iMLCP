@@ -7,7 +7,7 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 
 ## Features
 
-* Run any command of MLCP. Use iMLCP same way as mlcp.sh if you are already familiar with it
+* Run any MLCP command as-is
 * Interactive (Read-Eval-Print Loop)...
 * Auto-completion: MLCP command, options, frequently-used value (true, false, xml, ...) and system path
 * Command history (hit up arrow)
