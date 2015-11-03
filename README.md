@@ -53,8 +53,8 @@ sh build.sh
 After successful build, follow the steps in #Usage to run iMLCP.
 
 ### System Requirement
-* Java 7
-* Maven 3
+* Maven 3 (to build)
+* Java 7 (same version requirement of MLCP)
 
 ### Dependency
 
