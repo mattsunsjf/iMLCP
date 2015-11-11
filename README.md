@@ -77,6 +77,10 @@ iMLCP uses the same version of MarkLogic Server, which is different from MCLP. C
 - Shell output coloring
 - User experience improvement
 
+## Quick Demo (Video)
+
+[![ScreenShot](http://tekloaded.com/wp-content/uploads/2015/02/youtube-vid.jpg)](http://youtu.be/CTxOJuo-Ju8)
+
 ## License
 
 In place of a legal notice, here is a blessing:
