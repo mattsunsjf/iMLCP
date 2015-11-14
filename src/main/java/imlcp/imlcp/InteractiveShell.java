@@ -54,8 +54,7 @@ public class InteractiveShell {
 		iMlcp.startConsole();
 	}
 	
-
-	
+	/* CommandLine Executor might be needed for Windows. Leave this here for now. */
 	/*
 	public void runShellCommand(String command){
 		int iExitValue = 0;
@@ -77,54 +76,29 @@ public class InteractiveShell {
     	while (true) {
     		try {
     			String line = "";
+    			String clipboardBuffer = "";
     	        while ((line = console.readLine()) != null) {
-    	    		if (line.trim().equals("")) {
-    	            	continue;
-    	            } else if (line.trim().equalsIgnoreCase("?"))  {
-    	            	logShellHelp();
-    	            	continue;
-    	            } else if (line.toLowerCase().trim().equalsIgnoreCase("quit") ||
-    	            		line.toLowerCase().trim().equalsIgnoreCase("exit")) {
-    	                return;
-    	            } else if (line.toLowerCase().equalsIgnoreCase("cls") ||
-    	            		line.toLowerCase().equalsIgnoreCase("clear")) {
-    	                console.clearScreen();
-    	                continue;
-    	            } else if (line.trim().startsWith("$")) {
-    	            	Process p;
-    	            	
-    	            	String os = System.getProperty("os.name");
-    	            	if (!os.toLowerCase().contains("windows")) {
-    	            		p = Runtime.getRuntime().exec(
-        	            			new String[] {"/bin/sh", "-c",
-        	            					line.trim().substring(1)});
-    	            	} else {
-    	            		p = Runtime.getRuntime().exec(
-        	            			new String[] {line.trim().substring(1)});
-    	            	}
-    					p.waitFor();
-    		             
-    					BufferedReader stdInput = new BufferedReader(
-    							new InputStreamReader(p.getInputStream()));
-    					BufferedReader stdError = new BufferedReader(
-    							new InputStreamReader(p.getErrorStream()));
-    			 
-    					String s = "";
-    					while ((s = stdInput.readLine()) != null) {
-    						System.out.println(s);
-    					}
-    					while ((s = stdError.readLine()) != null) {
-    						System.out.println(s);
-    					}
-    					continue;
-    	            } else {
-    	            	String arguments[] = split(line);
-        	            try {
-        	            	ContentPump.runCommand(arguments);
-        	            } catch (Exception e) {
-        	            	e.printStackTrace();
-        	            }  
-    	            } 	            
+    	        	clipboardBuffer = line;
+    	        	String[] arguments = preprocess(line);
+    	        	Command command = null;
+    	        	
+    	        	try {
+    	        		if (arguments == null || arguments.length < 1) {
+    	        			continue;
+    	        		}
+    	        		command = Command.forName(arguments[0]);
+    	        		
+    	        		if (command != Command.MLCP && arguments.length > 1) {
+    	        			throw new UnsupportedOperationException();
+        	        	} else if (command == Command.EXIT) {
+    	        			break;
+    	        		} else {
+    	        			command.execute(arguments, console);
+    	        		}
+    	        	} catch (UnsupportedOperationException e) {
+    	        		logUnsupportedCommand(line);
+    	        		continue;
+    	        	}	            
     	        }
     		} catch (UserInterruptException e) {
     			// Catch CTRL+C
@@ -137,7 +111,17 @@ public class InteractiveShell {
 	/* Command line string pre-process */
 	
 	protected String[] preprocess(String line) {
-		String[] args = split(line);
+		line = line.trim();
+		String[] args = null;
+		if (line == "") {
+			return args;
+		} else if (line.startsWith("$")) {
+			args = new String[2];
+			args[0] = "$";
+			args[1] = line.substring(1);
+			return args;
+		}
+		args = split(line);
 		unquote(args);
 		unescape(args);
 		return args;
@@ -185,36 +169,6 @@ public class InteractiveShell {
 			}
 		}
 	}
-	
-	/* From this line below, all the functions are used to print something */
-	
-	protected void logShellHelp() throws IOException {
-		System.out.println("MLCP Interactive Shell Help");
-		System.out.println("----------------------------------------------------");
-		System.out.println("[Command]              [Usage]");
-		System.out.println("cls/clear              Clean the screen");
-		System.out.println("quit/exit              Exit the MLCP interactive shell");
-		System.out.println("$[command]             Execute system shell command. Example: $ls -al");
-		System.out.println("help                   Help for MLCP");
-		System.out.println("CTRL+C                 Stop the MLCP job or discard current command line");
-		System.out.println("?                      Help for interactive shell");
-	}
-	
-	protected void printHead() throws IOException {
-		System.out.println();
-		logVersions();
-		System.out.println("Type \"?\" for interactive shell help."
-				+ " Type \"HELP\" for MLCP help.");
-	}
-	
-	public static void logVersions() {
-        System.out.println("ContentPump version: 1.3-3");
-        System.out.println("Java version: " + 
-            System.getProperty("java.version"));
-        System.out.println("Hadoop version: " + VersionInfo.getVersion());
-        System.out.println("Supported MarkLogic versions: " + 
-                "6.0 - 8.0-3");
-    }
 	
 	protected ArrayList<String> configAutoCompletion() throws Exception {
 		ArrayList<String> dict = new ArrayList<String>();
@@ -329,5 +283,28 @@ public class InteractiveShell {
 		dict.add("-xml_repair_level");
 		
 		return dict;
+	}
+	
+	/* From this line below, all the functions are used to print something */
+	
+	protected void printHead() throws IOException {
+		System.out.println();
+		logVersions();
+		System.out.println("Type \"?\" for interactive shell help."
+				+ " Type \"HELP\" for MLCP help.");
+	}
+	
+	public static void logVersions() {
+        System.out.println("ContentPump version: 1.3-3");
+        System.out.println("Java version: " + 
+            System.getProperty("java.version"));
+        System.out.println("Hadoop version: " + VersionInfo.getVersion());
+        System.out.println("Supported MarkLogic versions: " + 
+                "6.0 - 8.0-3");
+    }
+	
+	public static void logUnsupportedCommand(String cmd) {
+		System.out.println("Unsupported command: " + cmd);
+		System.out.println("Please refer to documentation or type ? to view supported command.");
 	}
 }
