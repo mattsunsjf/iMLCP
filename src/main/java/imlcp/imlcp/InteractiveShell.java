@@ -88,10 +88,12 @@ public class InteractiveShell {
     	        		}
     	        		command = Command.forName(arguments[0]);
     	        		
-    	        		if (command != Command.MLCP && arguments.length > 1) {
+    	        		if (command != Command.MLCP && 
+    	        				command != Command.SYS && 
+    	        				arguments.length > 1) {
     	        			throw new UnsupportedOperationException();
         	        	} else if (command == Command.EXIT) {
-    	        			break;
+    	        			return;
     	        		} else {
     	        			command.execute(arguments, console);
     	        		}

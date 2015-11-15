@@ -93,12 +93,11 @@ public enum Command {
 			return USAGE;
 		} else if (cmd.equalsIgnoreCase(DEBUG.name())) {
 			return DEBUG;
+		} else if (cmd.equalsIgnoreCase("$")) {
+			return SYS;
 		} else if (isMlcpCommand(cmd)) {
 			return MLCP;
-		} else if (cmd.equals("$")) {
-			return SYS;
-		}
-		else {
+		} else {
 			throw new UnsupportedOperationException();
 		}
 	}
