@@ -3,6 +3,10 @@
  */
 package imlcp.imlcp;
 
+import java.awt.datatransfer.*;
+import java.awt.Toolkit;
+
+import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -92,11 +96,19 @@ public class InteractiveShell {
     	        				command != Command.SYS && 
     	        				arguments.length > 1) {
     	        			throw new UnsupportedOperationException();
-        	        	} else if (command == Command.EXIT) {
-    	        			return;
-    	        		} else {
-    	        			command.execute(arguments, console);
-    	        		}
+        	        	};
+        	        	
+        	        	switch (command) {
+        	        	case EXIT:
+        	        		return;
+        	        	case MLCP:
+        	        		StringSelection stringSelection = new StringSelection(clipboardBuffer);
+        	        		Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+        	        		clpbrd.setContents(stringSelection, null);
+        	        	default:
+        	        		command.execute(arguments, console);
+        	        		break;
+        	        	}
     	        	} catch (UnsupportedOperationException e) {
     	        		logUnsupportedCommand(line);
     	        		continue;
