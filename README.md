@@ -7,13 +7,13 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 
 ## Features
 
-* Run any MLCP command as-is
-* Interactive (Read-Eval-Print Loop)...
-* Auto-completion: MLCP command, options, frequently-used value (true, false, xml, ...) and system path
-* Command history (hit up arrow)
-* Run any system shell command
-* **Wildcard** file path
+* Run any MLCP command **as-is**
+* **Auto-completion**: , Including all MLCP commands, all options, frequently-used value (true, false, xml, all input types, etc…) and system file path. (Hit TAB)
+* **Command History** (browse by up arrow and down arrow)
+* Run any **system shell** command (for example: $ls –ltr | grep –iR “bin”)
+* Support file path **wildcard**
 * Easy to deploy, standalone project of MLCP
+* Interactive (Read-Eval-Print Loop) with many useful commands
 * Get rid of many existing system shell limitations, include but not limit to:
   * **Use space** in your option argument! (-output_uri_replace "str,'hello world'" doesn't work before becasue space between hello and world)
   * **No automatic path expanding limitation** of system shell (which may cause '*Argument too long*' error)
@@ -24,11 +24,12 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 
 | Command      | Usage                                                  |
 | -------------| ------------------------------------------------------ |
-| cls/clear    |Clean the screen                                        |
-| quit/exit    | Exit the MLCP interactive shell                        |
+| debug        | Enable/disable runtime debug mode                      |
+| clear        |Clean the screen                                        |
+| exit         | Exit the MLCP interactive shell                        |
 | $[command]   | Execute system shell command. Example: $ls -al         |
 | help         |Help for MLCP                                           |
-| CTRL+C       |Stop the MLCP job or discard current command line input |
+| CTRL+C       |Discard current command line input |
 | ?            |Help for interactive shell                              |
 
 All the commands are case-insensitive (except system shell commands).
