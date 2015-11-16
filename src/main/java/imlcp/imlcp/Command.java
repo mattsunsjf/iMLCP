@@ -7,6 +7,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+
 import com.marklogic.contentpump.ContentPump;
 
 import jline.console.ConsoleReader;
@@ -50,7 +53,19 @@ public enum Command {
 	DEBUG {
 		@Override
 		public void execute(String[] cmd, ConsoleReader console) throws Exception {
-			// TODO
+			Level mlcpLevel = LogManager.getLogger("com.marklogic.contentpump").getLevel();
+			Level connectorLevel = LogManager.getLogger("com.marklogic.mapreduce").getLevel();
+			
+			if (mlcpLevel == Level.DEBUG && connectorLevel == Level.DEBUG) {
+				LogManager.getLogger("com.marklogic.contentpump").setLevel(Level.INFO);
+				LogManager.getLogger("com.marklogic.mapreduce").setLevel(Level.INFO);
+				System.out.println("MLCP debug mode off");
+			} else {
+				LogManager.getLogger("com.marklogic.contentpump").setLevel(Level.DEBUG);
+				LogManager.getLogger("com.marklogic.mapreduce").setLevel(Level.DEBUG);
+				System.out.println("MLCP debug mode on");
+			}
+			System.out.println("To change the startup configuration, please update log4j.properties");
 		}
 	},
 	/* System Shell Command */
@@ -120,6 +135,7 @@ public enum Command {
 		System.out.println("[Command]              [Usage]");
 		System.out.println("clear                  Clean the screen");
 		System.out.println("exit                   Exit the MLCP interactive shell");
+		System.out.println("debug                  Enable/disable MLCP debug mode");
 		System.out.println("$[command]             Execute system shell command. Example: $ls -al");
 		System.out.println("help                   Help for MLCP");
 		System.out.println("CTRL+C                 Discard current command line");
