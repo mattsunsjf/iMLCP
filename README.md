@@ -13,6 +13,8 @@ Author: [Matt Sun](mailto:matt.sun@marklogic.com)
 * Run any **system shell** command (for example: $ls –ltr | grep –iR “bin”)
 * Support file path **wildcard**
 * Easy to deploy, standalone project of MLCP
+* MLCP command automatically copied to **clipboard**
+* Enable/disable **debug** mode runtime
 * Interactive (Read-Eval-Print Loop) with many useful commands
 * Get rid of many existing system shell limitations, include but not limit to:
   * **Use space** in your option argument! (-output_uri_replace "str,'hello world'" doesn't work before becasue space between hello and world)
