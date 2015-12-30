@@ -239,6 +239,7 @@ public class InteractiveShell {
 		dict.add("copy");
 		dict.add("default");
 		dict.add("delimited_text");
+		dict.add("delimited_json");
 		dict.add("distributed");
 		dict.add("documents");
 		dict.add("export");
@@ -268,16 +269,17 @@ public class InteractiveShell {
 		dict.add("-batch_size");
 		dict.add("-collection_filter");
 		dict.add("-compress");
-		dict.add("-conffilename");
+		dict.add("-conf");
 		dict.add("-content_encoding");
 		dict.add("-copy_collections");
 		dict.add("-copy_permissions");
 		dict.add("-copy_properties");
 		dict.add("-copy_quality");
+		dict.add("-data_type");
 		dict.add("-database");
 		dict.add("-delimited_root_name");
 		dict.add("-delimited_uri_id");
-		dict.add("-delimitercharacter");
+		dict.add("-delimiter");
 		dict.add("-directory_filter");
 		dict.add("-document_selector");
 		dict.add("-document_type");
@@ -301,14 +303,15 @@ public class InteractiveShell {
 		dict.add("-min_split_size");
 		dict.add("-mode");
 		dict.add("-namespace");
-		dict.add("-options_file");
 		dict.add("-output_cleandir");
 		dict.add("-output_collections");
 		dict.add("-output_database");
 		dict.add("-output_directory");
 		dict.add("-output_file_path");
+		dict.add("-output_graph");
 		dict.add("-output_host");
 		dict.add("-output_language");
+		dict.add("-output_override_graph");
 		dict.add("-output_partition");
 		dict.add("-output_password");
 		dict.add("-output_permissions");
@@ -322,6 +325,7 @@ public class InteractiveShell {
 		dict.add("-password");
 		dict.add("-path_namespace");
 		dict.add("-port");
+		dict.add("-query_filter");
 		dict.add("-sequencefile_key_class");
 		dict.add("-sequencefile_value_class");
 		dict.add("-sequencefile_value_type");
@@ -330,7 +334,7 @@ public class InteractiveShell {
 		dict.add("-streaming");
 		dict.add("-temporal_collection");
 		dict.add("-thread_count");
-		dict.add("-thread_count_per_split");
+		dict.add("thread_count_per_split");
 		dict.add("-tolerate_errors");
 		dict.add("-transaction_size");
 		dict.add("-transform_function");
@@ -338,6 +342,7 @@ public class InteractiveShell {
 		dict.add("-transform_namespace");
 		dict.add("-transform_param");
 		dict.add("-type_filter");
+		dict.add("-uri_id");
 		dict.add("-username");
 		dict.add("-xml_repair_level");
 		
