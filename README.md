@@ -85,6 +85,12 @@ iMLCP uses the same version of MarkLogic Server, which is different from MCLP. C
 
 [![ScreenShot](http://tekloaded.com/wp-content/uploads/2015/02/youtube-vid.jpg)](http://youtu.be/CTxOJuo-Ju8)
 
+## Discuss Group
+
+[Discuss Group](https://groups.google.com/forum/#!forum/imlcp)
+All new releases, discuss, issues and feature requirement can be posted/viewed from discuss group.
+Subscribe to it now!
+
 ## License
 
 In place of a legal notice, here is a blessing:
