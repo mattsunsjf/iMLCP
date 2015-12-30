@@ -63,7 +63,7 @@ After successful build, follow the steps in #Usage to run iMLCP.
 ### Dependency
 
 * [jlineEnhanced v2.15](https://github.com/mattsunsjf/jline2-imlcp) A friendly fork of jline2 with specific enhancement for iMLCP 
-* [MLCP v8.0-3](http://developer.marklogic.com/products/mlcp) MarkLogic Content Pump, an open-source, Java-based command-line tool that provides the fastest way to import, export, and copy data to or from MarkLogic databases
+* [MLCP](http://developer.marklogic.com/products/mlcp) MarkLogic Content Pump, an open-source, Java-based command-line tool that provides the fastest way to import, export, and copy data to or from MarkLogic databases
 * Other dependencies are mostly for MLCP, see pom.xml for more details.
 
 ## Platform
@@ -72,7 +72,7 @@ Currently only support *nix systems. Will extend the support to Windows and othe
 
 ## Versioning
 
-iMLCP uses the same version of MarkLogic Server, which is different from MCLP. Currently only a few versions are available (see branches), but a branch matching MarkLogic Server version can be made on demand. Email [author](mailto:matt.sun@marklogic.com) for more details.
+iMLCP uses the same version number of MarkLogic Server. See branches or tags for iMLCP releases. Branches matching previous MarkLogic Server version can be made on demand. Email [author](mailto:matt.sun@marklogic.com) for more details.
 
 ## Todo
 
