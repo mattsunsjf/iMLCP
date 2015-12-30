@@ -5,17 +5,23 @@ package imlcp.imlcp;
 
 import java.awt.datatransfer.*;
 import java.awt.Toolkit;
-
 import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.util.VersionInfo;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Logger;
+import org.apache.log4j.WriterAppender;
 
 import jline.console.ConsoleReader;
 import jline.console.UserInterruptException;
@@ -32,11 +38,33 @@ import com.marklogic.contentpump.ContentPump;
  */
 public class InteractiveShell {
 	private ConsoleReader console;
+	private StringWriter consoleWriter;
+	private List<String> cmdHistory;
+	private List<String> jobHistory;
 	
 	public InteractiveShell() throws Exception {
 		console = new ConsoleReader();
+		cmdHistory = new ArrayList<String>();
+		jobHistory = new ArrayList<String>();
 	}
 	
+	protected ConsoleReader getConsole() {
+		return console;
+	}
+	
+	protected List<String> getCmdHistory() {
+		return cmdHistory;
+	}
+	
+	protected List<String> getJobHistory() {
+		return jobHistory;
+	}
+	
+	protected StringWriter getConsoleWriter() {
+		return consoleWriter;
+	}
+	
+	@SuppressWarnings( "deprecation" )
 	protected void initialize() throws Exception {
 		console.setPrompt("mlcp > ");
         console.setHandleUserInterrupt(true);
@@ -46,6 +74,19 @@ public class InteractiveShell {
         		new FileNameCompleter()));
         arguCompleter.setStrict(false);            
         console.addCompleter(arguCompleter);
+        
+        InterruptHandler.install();
+        
+        consoleWriter = new StringWriter();
+        Layout layout = null;
+        
+        Enumeration appenders = Logger.getRootLogger().getAllAppenders();
+        while (appenders.hasMoreElements()) {
+        	layout = ((ConsoleAppender)appenders.nextElement()).getLayout();
+        	break;
+        }
+        WriterAppender appender = new WriterAppender(layout, consoleWriter);
+        Logger.getRootLogger().addAppender(appender);
 	}
 	
 	/**
@@ -80,9 +121,7 @@ public class InteractiveShell {
     	while (true) {
     		try {
     			String line = "";
-    			String clipboardBuffer = "";
     	        while ((line = console.readLine()) != null) {
-    	        	clipboardBuffer = line;
     	        	String[] arguments = preprocess(line);
     	        	Command command = null;
     	        	
@@ -91,22 +130,26 @@ public class InteractiveShell {
     	        			continue;
     	        		}
     	        		command = Command.forName(arguments[0]);
-    	        		
-    	        		if (command != Command.MLCP && 
-    	        				command != Command.SYS && 
-    	        				arguments.length > 1) {
-    	        			throw new UnsupportedOperationException();
-        	        	};
         	        	
         	        	switch (command) {
         	        	case EXIT:
         	        		return;
         	        	case MLCP:
-        	        		StringSelection stringSelection = new StringSelection(clipboardBuffer);
+        	        		StringSelection stringSelection = new StringSelection(line);
         	        		Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
         	        		clpbrd.setContents(stringSelection, null);
+        	        		
+        	        		command.execute(arguments, this);
+        	        		
+        	        		cmdHistory.add(line);
+        	        		jobHistory.add(consoleWriter.getBuffer().toString());
+        	        		
+        	        		// Clear the buffer every time MLCP runs a job
+        	        		int bufLength = consoleWriter.getBuffer().length();
+        	        		consoleWriter.getBuffer().delete(0, bufLength);
+        	        		break;
         	        	default:
-        	        		command.execute(arguments, console);
+        	        		command.execute(arguments, this);
         	        		break;
         	        	}
     	        	} catch (UnsupportedOperationException e) {
@@ -114,7 +157,9 @@ public class InteractiveShell {
     	        		continue;
     	        	}	            
     	        }
-    		} catch (UserInterruptException e) {
+    		} /*catch (InterruptedException e) {
+    			continue;
+    		} */catch (UserInterruptException e) {
     			// Catch CTRL+C
     			// TODO Try with mlcp job, whether it stops mlcp job
     			continue;
@@ -125,17 +170,17 @@ public class InteractiveShell {
 	/* Command line string pre-process */
 	
 	protected String[] preprocess(String line) {
-		line = line.trim();
+		String newLine = line.trim();
 		String[] args = null;
-		if (line == "") {
+		if (newLine == "") {
 			return args;
-		} else if (line.startsWith("$")) {
+		} else if (newLine.startsWith("$")) {
 			args = new String[2];
 			args[0] = "$";
-			args[1] = line.substring(1);
+			args[1] = newLine.substring(1);
 			return args;
 		}
-		args = split(line);
+		args = split(newLine);
 		unquote(args);
 		unescape(args);
 		return args;
@@ -247,7 +292,7 @@ public class InteractiveShell {
 		dict.add("-input_database");
 		dict.add("-input_file_path");
 		dict.add("-input_file_pattern");
-		dict.add("-input_file_typetype");
+		dict.add("-input_file_type");
 		dict.add("-input_host");
 		dict.add("-input_password");
 		dict.add("-input_port");
@@ -299,8 +344,7 @@ public class InteractiveShell {
 		return dict;
 	}
 	
-	/* From this line below, all the functions are used to print something */
-	
+	/* From this line below, all the functions are used to print something */	
 	protected void printHead() throws IOException {
 		System.out.println();
 		logVersions();
@@ -314,11 +358,26 @@ public class InteractiveShell {
             System.getProperty("java.version"));
         System.out.println("Hadoop version: " + VersionInfo.getVersion());
         System.out.println("Supported MarkLogic versions: " + 
-                "6.0 - 8.0-3");
+                "6.0 - 8.0.3");
     }
 	
 	public static void logUnsupportedCommand(String cmd) {
 		System.out.println("Unsupported command: " + cmd);
 		System.out.println("Please refer to documentation or type ? to view supported command.");
+	}
+	
+	protected void logShellHelp() throws IOException {
+		System.out.println("MLCP Interactive Shell Help");
+		System.out.println("----------------------------------------------------");
+		System.out.println("COMMAND                 USAGE");
+		System.out.println("----------------------------------------------------");
+		System.out.println("clear                   Clean the screen");
+		System.out.println("exit                    Exit the MLCP interactive shell");
+		System.out.println("debug                   Enable/disable MLCP debug mode");
+		System.out.println("$[command]              Execute system shell command. Example: $ls -al");
+		System.out.println("jobs [number[,number]]  View command history and output"); 
+		System.out.println("help                    Help for MLCP");
+		System.out.println("CTRL+C                  Discard current command line");
+		System.out.println("?                       Help for interactive shell");
 	}
 }

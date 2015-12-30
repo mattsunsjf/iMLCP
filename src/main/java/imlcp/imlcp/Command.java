@@ -6,6 +6,7 @@ package imlcp.imlcp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
@@ -23,18 +24,18 @@ import jline.console.ConsoleReader;
 public enum Command {
 	CLEAR {
 		@Override
-		public void execute(String[] cmd, ConsoleReader console) throws Exception {
-			console.clearScreen();
+		public void execute(String[] cmd, InteractiveShell shell) throws Exception {
+			shell.getConsole().clearScreen();
 		}
 	},
 	EXIT {
 		@Override
-		public void execute(String[] cmd, ConsoleReader console) throws Exception{};
+		public void execute(String[] cmd, InteractiveShell shell) throws Exception{};
 	},
 	/* MLCP Command */
 	MLCP {
 		@Override
-		public void execute(String[] cmd, ConsoleReader console) throws Exception {
+		public void execute(String[] cmd, InteractiveShell shell) throws Exception {
 			try {
             	ContentPump.runCommand(cmd);
             } catch (Exception e) {
@@ -45,14 +46,14 @@ public enum Command {
 	/* Help for iMLCP */
 	USAGE {
 		@Override
-		public void execute(String[] cmd, ConsoleReader console) throws Exception {
-			logShellHelp();
+		public void execute(String[] cmd, InteractiveShell shell) throws Exception {
+			shell.logShellHelp();
 		}
 	},
 	/* Enable/disable debug mode */
 	DEBUG {
 		@Override
-		public void execute(String[] cmd, ConsoleReader console) throws Exception {
+		public void execute(String[] cmd, InteractiveShell shell) throws Exception {
 			Level mlcpLevel = LogManager.getLogger("com.marklogic.contentpump").getLevel();
 			Level connectorLevel = LogManager.getLogger("com.marklogic.mapreduce").getLevel();
 			
@@ -71,7 +72,7 @@ public enum Command {
 	/* System Shell Command */
 	SYS {
 		@Override
-		public void execute(String[] cmd, ConsoleReader console) throws Exception {
+		public void execute(String[] cmd, InteractiveShell shell) throws Exception {
 			Process p;
         	
         	String os = System.getProperty("os.name");
@@ -98,6 +99,43 @@ public enum Command {
 				System.out.println(s);
 			}
 		}
+	},
+	/* MLCP Job History */
+	JOBS {
+		@Override
+		public void execute(String[] cmd, InteractiveShell shell) throws Exception {
+			List<String> cmdHistory = shell.getCmdHistory();
+			List<String> jobHistory = shell.getJobHistory();
+			
+			if (cmd.length == 1) {
+				for (int i = 0; i < cmdHistory.size(); i++) {
+					System.out.println("[" + i + "] " + cmdHistory.get(i));
+				}
+				System.out.println();
+				System.out.println("Use 'jobs [comma spearated number]' to view job histories. Example: jobs 1,2,4");
+			} else {
+				String[] idx = cmd[1].split(",");
+				System.out.println();
+				for (int i = 0; i < idx.length; i++) {
+					int index = 0;
+					
+					try {
+						index = Integer.parseInt(idx[i]);
+					} catch (NumberFormatException e) {
+						System.out.println("Invalid job number " + idx[i]);
+						continue;
+					}
+					
+					if (index > cmdHistory.size() || index > jobHistory.size()) {
+						System.out.println("Invalid job number " + idx[i]);
+						continue;
+					}
+					
+					System.out.println("[" + i + "] " + cmdHistory.get(index));
+					System.out.println(jobHistory.get(index));
+				}
+			}
+		}
 	};
 	public static Command forName(String cmd) throws IOException{
 		if (cmd.equalsIgnoreCase(CLEAR.name())) {
@@ -112,6 +150,8 @@ public enum Command {
 			return SYS;
 		} else if (isMlcpCommand(cmd)) {
 			return MLCP;
+		} else if (cmd.equalsIgnoreCase(JOBS.name())) {
+			return JOBS;
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -127,18 +167,7 @@ public enum Command {
 		}
 	}
 	
-	public abstract void execute(String[] cmd, ConsoleReader console) throws Exception;
+	public abstract void execute(String[] cmd, InteractiveShell shell) throws Exception;
 	
-	protected void logShellHelp() throws IOException {
-		System.out.println("MLCP Interactive Shell Help");
-		System.out.println("----------------------------------------------------");
-		System.out.println("[Command]              [Usage]");
-		System.out.println("clear                  Clean the screen");
-		System.out.println("exit                   Exit the MLCP interactive shell");
-		System.out.println("debug                  Enable/disable MLCP debug mode");
-		System.out.println("$[command]             Execute system shell command. Example: $ls -al");
-		System.out.println("help                   Help for MLCP");
-		System.out.println("CTRL+C                 Discard current command line");
-		System.out.println("?                      Help for interactive shell");
-	}
+	
 }
